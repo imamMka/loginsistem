@@ -1,7 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Homepage from "../pages/Homepage";
 import ForgotPassword from "../pages/forgetPass";
-import Register from "../pages/register"
+import Register from "../pages/register";
+import NotFound from "../pages/404ntfound"; 
 
 export default function Routes() {
     const router = createBrowserRouter([
@@ -16,6 +17,10 @@ export default function Routes() {
         {
             path: "/Register",
             element: <Register />
+        },
+        {
+            path: "*",
+            element: <NotFound />
         }
     ]);
 
