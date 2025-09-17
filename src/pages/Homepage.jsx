@@ -5,14 +5,30 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const schema = z.object({
-  username: z.string().min(1, "Username is required").min(8, "Username must be at least 8 characters long"),
-  password: z.string().min(1, "Password is required").min(6, "Password must be at least 6 characters long"),
-})
+  username: z
+    .string()
+    .min(1, "Username or Email is required")
+    .min(5, "Username must be at least 5 characters long"),
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .min(8, "Password must be at least 8 characters long")
+    .regex(/[A-Z]/, "Password must contain at least one capital letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(
+      /[^a-zA-Z0-9]/,
+      "Password must contain at least one special character"
+    ),
+});
 
 export default function Homepage() {
   const navigate = useNavigate();
-  const { register,handleSubmit, formState: { errors } } = useForm({
-    resolver: zodResolver(schema)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ 
+    resolver: zodResolver(schema),
   });
 
   return (
@@ -34,11 +50,15 @@ export default function Homepage() {
               <label htmlFor="">Username</label>
               <input
                 type="text"
-                placeholder="Enter your username"
+                placeholder="Enter your username or email"
                 className="bg-[#001d3d] p-3 rounded-md w-full"
                 {...register("username")}
               />
-              {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>}
+              {errors.username && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.username.message}
+                </p>
+              )}
             </div>
 
             <div className="flex flex-col text-white">
@@ -49,8 +69,15 @@ export default function Homepage() {
                 className="bg-[#001d3d] p-3 rounded-md w-full"
                 {...register("password")}
               />
-              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
-              <a onClick={() => navigate("/forgot-password")}  className="text-blue-400 hover:underline text-[14px]">
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.password.message}
+                </p>
+              )}
+              <a
+                onClick={() => navigate("/forgot-password")}
+                className="text-blue-400 hover:underline text-[14px]"
+              >
                 Forget your password?
               </a>
             </div>
@@ -58,14 +85,16 @@ export default function Homepage() {
               className="bg-[#219ebc] text-white px-4 py-3 rounded-xl cursor-pointer w-full"
               type="submit"
             >
-              
               Login
             </button>
           </div>
 
           <p className="text-white">
             Don't have an account yet?{" "}
-            <a onClick={() => navigate("/Register")} className="text-blue-400 hover:underline">
+            <a
+              onClick={() => navigate("/Register")}
+              className="text-blue-400 hover:underline"
+            >
               Register
             </a>
           </p>
